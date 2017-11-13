@@ -7,3 +7,4 @@ venv
 .eggs
 *.egg-info
 dist/
+config.py

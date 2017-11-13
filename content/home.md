@@ -1,5 +1,4 @@
-title: My Knowledge Management System
-tags: interesting
+title: Home
+tags: Home
 
-World
-[[hello|abc]] [[world|world]]
+## Test Homepage
