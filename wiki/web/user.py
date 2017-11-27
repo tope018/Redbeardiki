@@ -83,6 +83,7 @@ class User(object):
         self.data = data
 
     def get(self, option):
+        # type: (object) -> object
         return self.data.get(option)
 
     def set(self, option, value):

@@ -13,8 +13,8 @@ from flask_login import login_required
 from flask_login import login_user
 from flask_login import logout_user
 
-from wiki.core import Processor
-from wiki.web.forms import EditorForm
+from wiki.core import Processor, clean_url
+from wiki.web.forms import EditorForm, CombineForm
 from wiki.web.forms import LoginForm
 from wiki.web.forms import SearchForm
 from wiki.web.forms import URLForm
@@ -127,6 +127,39 @@ def search():
         return render_template('search.html', form=form,
                                results=results, search=form.term.data)
     return render_template('search.html', form=form, search=None)
+
+
+@bp.route('/combine/', methods=['GET', 'POST'])
+@protect
+def combine():
+    pages = current_wiki.index()
+    form = CombineForm()
+    url = form.url._value()
+    if form.is_submitted():
+        array = request.form.getlist('url')
+        file = open('wiki/web/templates/test.html', 'w')
+        file.truncate(0)
+        file.close()
+        for item in array:
+            if item != url:
+                page = current_wiki.get(item)
+                file = open('wiki/web/templates/test.html', 'a')
+                file.write(page.html)
+        file.close()
+        page = current_wiki.get(form.url.data)
+        form = CombineForm(obj=page)
+        if not page:
+            page = current_wiki.get_bare(form.url.data)
+        form.populate_obj(page)
+        file = open('wiki/web/templates/test.html', 'r')
+        page.body = file.read()
+        file.close()
+        page.save()
+        flash('"%s" was saved.' % page.title, 'success')
+        return redirect(url_for('wiki.display', url=form.url.data))
+    else:
+        return render_template('combine.html', form=form, pages=pages)
+
 
 
 @bp.route('/user/login/', methods=['GET', 'POST'])
