@@ -3,7 +3,7 @@
     ~~~~~
 """
 from flask_wtf import Form
-from wtforms import BooleanField
+from wtforms import BooleanField, FileField
 from wtforms import TextField
 from wtforms import TextAreaField
 from wtforms import PasswordField
@@ -32,6 +32,18 @@ class SearchForm(Form):
         description='Ignore Case',
         # FIXME: default is not correctly populated
         default=True)
+
+
+class CombineForm(Form):
+    title = TextField('', [InputRequired()])
+    tags = TextField('')
+    url = TextField('', [InputRequired()])
+    def validate_url(form, field):
+        if current_wiki.exists(field.data):
+            raise ValidationError('The URL "%s" exists already.' % field.data)
+
+    def clean_url(self, url):
+        return clean_url(url)
 
 
 class EditorForm(Form):

@@ -14,3 +14,11 @@ class WebContentTestCase(WikiBaseTestCase):
         rsp = self.app.get('/')
         assert b"You did not create any content yet." in rsp.data
         assert rsp.status_code == 200
+
+
+    def test_combine(self):
+        """
+            Assert the combine page will correctly combine content from
+            selected pages into a new page.
+        """
+

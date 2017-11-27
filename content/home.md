@@ -1,4 +1,4 @@
 title: Home
-tags: Home
+tags: home
 
-## Test Homepage
+## Testpage
