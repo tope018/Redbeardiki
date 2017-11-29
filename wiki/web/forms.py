@@ -52,6 +52,10 @@ class EditorForm(Form):
     tags = TextField('')
 
 
+class ExportForm(Form):
+    fileName = TextField('', [InputRequired()])
+
+
 class LoginForm(Form):
     name = TextField('', [InputRequired()])
     password = PasswordField('', [InputRequired()])
