@@ -158,6 +158,7 @@ def combine():
     url = form.url._value()
     if form.is_submitted():
         if form.title.validate(form) and form.url.validate(form):
+            newUrl = form.clean_url(form.url.data)
             array = request.form.getlist('url')
             file = open('wiki/web/templates/test.html', 'w')
             file.truncate(0)
@@ -168,17 +169,17 @@ def combine():
                     file = open('wiki/web/templates/test.html', 'a')
                     file.write(page.html)
             file.close()
-            page = current_wiki.get(form.url.data)
+            page = current_wiki.get(newUrl)
             form = CombineForm(obj=page)
             if not page:
-                page = current_wiki.get_bare(form.url.data)
+                page = current_wiki.get_bare(newUrl)
             form.populate_obj(page)
             file = open('wiki/web/templates/test.html', 'r')
             page.body = file.read()
             file.close()
             page.save()
             flash('"%s" was saved.' % page.title, 'success')
-            return redirect(url_for('wiki.display', url=form.url.data))
+            return redirect(url_for('wiki.display', url=newUrl))
         else:
             return render_template('combine.html', form=form, pages=pages)
     else:
