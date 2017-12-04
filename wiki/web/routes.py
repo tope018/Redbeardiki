@@ -14,7 +14,7 @@ from flask_login import login_user
 from flask_login import logout_user
 
 from wiki.core import Processor, clean_url
-from wiki.web.forms import EditorForm, CombineForm
+from wiki.web.forms import EditorForm, CombineForm, UploadForm
 from wiki.web.forms import LoginForm
 from wiki.web.forms import SearchForm
 from wiki.web.forms import URLForm
@@ -185,6 +185,30 @@ def combine():
     else:
         return render_template('combine.html', form=form, pages=pages)
 
+
+@bp.route('/upload/', methods=['GET', 'POST'])
+@protect
+def upload():
+    pages = current_wiki.index()
+    form = UploadForm()
+    if form.is_submitted():
+        if form.title.validate(form) and form.url.validate(form):
+            url = form.clean_url(form.url.data)
+            page = current_wiki.get(url)
+            form = UploadForm(obj=page)
+            if not page:
+                page = current_wiki.get_bare(url)
+            form.populate_obj(page)
+            uploadFile = open(form.mdFile.data, 'r')
+            page.body = uploadFile.read()
+            uploadFile.close()
+            page.save()
+            flash('"%s" was saved.' % page.title, 'success')
+            return redirect(url_for('wiki.display', url=url))
+        else:
+            return render_template('upload.html', form=form, pages=pages)
+    else:
+        return render_template('upload.html', form=form, pages=pages)
 
 
 @bp.route('/user/login/', methods=['GET', 'POST'])
