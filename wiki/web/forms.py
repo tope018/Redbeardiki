@@ -46,6 +46,17 @@ class CombineForm(Form):
         return clean_url(url)
 
 
+class UploadForm(Form):
+    title = TextField('', [InputRequired()])
+    url = TextField('', [InputRequired()])
+    tags = TextField('')
+    mdFile = FileField('', [InputRequired()])
+    def validate_url(form, field):
+        if current_wiki.exists(field.data):
+            raise ValidationError('The URL "%s" exists already.' % field.data)
+    def clean_url(self, url):
+        return clean_url(url)
+
 class EditorForm(Form):
     title = TextField('', [InputRequired()])
     body = TextAreaField('', [InputRequired()])
