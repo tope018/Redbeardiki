@@ -250,6 +250,7 @@ class Wiki(object):
         return os.path.exists(path)
 
     def get(self, url):
+        # type: (object) -> object
         path = self.path(url)
         #path = os.path.join(self.root, url + '.md')
         if self.exists(url):

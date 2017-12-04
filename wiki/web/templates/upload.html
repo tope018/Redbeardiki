@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block title %}Select Markdown File to Upload{% endblock title %}
+
+{% block content %}
+    {% if pages %}
+        <form method="POST">
+            <tr>
+                    {{ input(form.url, placeholder="URL of the new page", autocomplete="off") }}
+                    {{ input(form.title, placeholder="Title", class="span7", autocomplete="off") }}
+			        {{ input(form.tags, placeholder="Tags (comma separated)", class="span7", autocomplete="off") }}
+            </tr>
+            <input type="file" name="mdFile" accept=".md" class="btn btn-success pull-left">
+            <input type="submit" class="btn btn-success pull-right" value="Submit">
+        </form>
+    {% else %}
+        <p>There are no pages yet.</p>
+    {% endif %}
+{% endblock content %}
+
+{% block sidebar %}
+    <ul class="nav nav-tabs nav-stacked">
+	    <li><a href="{{ url_for('wiki.create') }}">New Page</a></li>
+	    <li><a href="{{ url_for('wiki.tags') }}">Tag List</a></li>
+	    <li><a href="{{ url_for('wiki.search') }}">Search</a></li>
+    </ul>
+{% endblock sidebar %}

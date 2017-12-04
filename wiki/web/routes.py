@@ -13,14 +13,16 @@ from flask_login import login_required
 from flask_login import login_user
 from flask_login import logout_user
 
-from wiki.core import Processor
-from wiki.web.forms import EditorForm
+from wiki.core import Processor, clean_url
+from wiki.web.forms import EditorForm, CombineForm, UploadForm
 from wiki.web.forms import LoginForm
 from wiki.web.forms import SearchForm
 from wiki.web.forms import URLForm
+from wiki.web.forms import ExportForm
 from wiki.web import current_wiki
 from wiki.web import current_users
 from wiki.web.user import protect
+import os
 
 
 bp = Blueprint('wiki', __name__)
@@ -127,6 +129,86 @@ def search():
         return render_template('search.html', form=form,
                                results=results, search=form.term.data)
     return render_template('search.html', form=form, search=None)
+
+
+@bp.route('/export/<path:url>/', methods=['GET', 'POST'])
+@protect
+def export(url):
+    page = current_wiki.get_or_404(url)
+    form = ExportForm()
+    if form.is_submitted():
+        file = open('wiki/web/templates/test.html', 'w')
+        file.truncate(0)
+        file.close()
+        file = open('wiki/web/templates/test.html', 'a')
+        file.write(page.html)
+        file.close()
+        os.system("pandoc -s -o " + form.fileName.data + ".pdf" + " C:\\Users\\tope0_000\\Desktop\\Redbeardiki\\wiki\\web\\templates\\test.html")
+        return display('home')
+    else:
+        return render_template('Export.html', form = form, page = page)
+
+
+@bp.route('/combine/', methods=['GET', 'POST'])
+@protect
+def combine():
+    pages = current_wiki.index()
+    os.system("pandoc -s -o testdoc.pdf \"C:\\Users\\tope0_000\\Desktop\\CSC 440\\Homework 1\\CSC440-540-HW1-ver3.md\"")
+    form = CombineForm()
+    url = form.url._value()
+    if form.is_submitted():
+        if form.title.validate(form) and form.url.validate(form):
+            newUrl = form.clean_url(form.url.data)
+            array = request.form.getlist('url')
+            file = open('wiki/web/templates/test.html', 'w')
+            file.truncate(0)
+            file.close()
+            for item in array:
+                if item != url:
+                    page = current_wiki.get(item)
+                    file = open('wiki/web/templates/test.html', 'a')
+                    file.write(page.html)
+            file.close()
+            page = current_wiki.get(newUrl)
+            form = CombineForm(obj=page)
+            if not page:
+                page = current_wiki.get_bare(newUrl)
+            form.populate_obj(page)
+            file = open('wiki/web/templates/test.html', 'r')
+            page.body = file.read()
+            file.close()
+            page.save()
+            flash('"%s" was saved.' % page.title, 'success')
+            return redirect(url_for('wiki.display', url=newUrl))
+        else:
+            return render_template('combine.html', form=form, pages=pages)
+    else:
+        return render_template('combine.html', form=form, pages=pages)
+
+
+@bp.route('/upload/', methods=['GET', 'POST'])
+@protect
+def upload():
+    pages = current_wiki.index()
+    form = UploadForm()
+    if form.is_submitted():
+        if form.title.validate(form) and form.url.validate(form):
+            url = form.clean_url(form.url.data)
+            page = current_wiki.get(url)
+            form = UploadForm(obj=page)
+            if not page:
+                page = current_wiki.get_bare(url)
+            form.populate_obj(page)
+            uploadFile = open(form.mdFile.data, 'r')
+            page.body = uploadFile.read()
+            uploadFile.close()
+            page.save()
+            flash('"%s" was saved.' % page.title, 'success')
+            return redirect(url_for('wiki.display', url=url))
+        else:
+            return render_template('upload.html', form=form, pages=pages)
+    else:
+        return render_template('upload.html', form=form, pages=pages)
 
 
 @bp.route('/user/login/', methods=['GET', 'POST'])

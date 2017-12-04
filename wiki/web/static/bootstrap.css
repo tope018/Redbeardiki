@@ -157,6 +157,12 @@ a:hover {
   color: #005580;
   text-decoration: underline;
 }
+
+a:visited {
+  color: #800081;
+  text-decoration: none;
+}
+
 .img-rounded {
   -webkit-border-radius: 6px;
   -moz-border-radius: 6px;

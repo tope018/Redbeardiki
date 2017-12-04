@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block title %}Select Pages to Combine{% endblock title %}
+
+{% block content %}
+    {% if pages %}
+        <form method="POST">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Checkbox</th>
+                        <th>Title</th>
+                        <th>URL</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for page in pages %}
+                        <tr>
+                            <td><input type="checkbox" name="url" value="{{ page.url }}" />&nbsp;</td>
+                            <td><a href="{{ url_for('wiki.display', url=page.url) }}">{{ page.title }}</a></td>
+                            <td><a href="{{ url_for('wiki.display', url=page.url) }}">{{ page.url }}</a></td>
+                        </tr>
+                    {% endfor %}
+                <tr>
+                    {{ input(form.url, placeholder="URL of the new page", autocomplete="off") }}
+                    {{ input(form.title, placeholder="Title", class="span7", autocomplete="off") }}
+			        {{ input(form.tags, placeholder="Tags (comma separated)", class="span7", autocomplete="off") }}
+                </tr>
+                </tbody>
+            </table>
+            <input type="submit" class="btn btn-success pull-right" value="Submit">
+        </form>
+    {% else %}
+        <p>There are no pages yet.</p>
+    {% endif %}
+{% endblock content %}
+
+{% block sidebar %}
+{% endblock sidebar %}
