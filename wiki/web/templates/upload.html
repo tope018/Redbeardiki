@@ -1,7 +1,12 @@
 {% extends "base.html" %}
 
 {% block title %}Select Markdown File to Upload{% endblock title %}
-
+        <script type="text/javascript">
+            function showFileName() {
+                var fil = document.getElementById("myFile");
+                alert(fil.value);
+            }
+        </script>
 {% block content %}
     {% if pages %}
         <form method="POST">
@@ -9,8 +14,8 @@
                     {{ input(form.url, placeholder="URL of the new page", autocomplete="off") }}
                     {{ input(form.title, placeholder="Title", class="span7", autocomplete="off") }}
 			        {{ input(form.tags, placeholder="Tags (comma separated)", class="span7", autocomplete="off") }}
+                    {{ input(form.filePath, placeholder="Full File Path", class="span7", autocomplete="off") }}
             </tr>
-            <input type="file" name="mdFile" accept=".md" class="btn btn-success pull-left">
             <input type="submit" class="btn btn-success pull-right" value="Submit">
         </form>
     {% else %}
