@@ -199,7 +199,7 @@ def upload():
             if not page:
                 page = current_wiki.get_bare(url)
             form.populate_obj(page)
-            uploadFile = open(form.mdFile.data, 'r')
+            uploadFile = open(form.filePath.data, 'r')
             page.body = uploadFile.read()
             uploadFile.close()
             page.save()
