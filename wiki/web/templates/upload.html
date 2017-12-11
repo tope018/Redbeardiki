@@ -1,22 +1,32 @@
 {% extends "base.html" %}
 
 {% block title %}Select Markdown File to Upload{% endblock title %}
-        <script type="text/javascript">
-            function showFileName() {
-                var fil = document.getElementById("myFile");
-                alert(fil.value);
+{% block content %}
+    <script type="text/javascript">
+            function getFileInput(evt) {
+                var files = document.getElementById('filePath').files;
+                if (!files.length) {
+                    alert('Please select a file!');
+                    return;
+                }
+                var file = files[0];
+                var myReader = new FileReader();
+                myReader.readAsText(file);
+                myReader.onload = function(event){
+                    document.getElementById('fileInput').setAttribute('value', event.target.result);
+                }
             }
         </script>
-{% block content %}
     {% if pages %}
         <form method="POST">
             <tr>
                     {{ input(form.url, placeholder="URL of the new page", autocomplete="off") }}
                     {{ input(form.title, placeholder="Title", class="span7", autocomplete="off") }}
 			        {{ input(form.tags, placeholder="Tags (comma separated)", class="span7", autocomplete="off") }}
-                    {{ input(form.filePath, placeholder="Full File Path", class="span7", autocomplete="off") }}
             </tr>
+            <input type="file" id="filePath" name="filePath" accept=".md" class="btn btn-success pull-left" onchange="getFileInput(event)">
             <input type="submit" class="btn btn-success pull-right" value="Submit">
+            <input type="hidden" id="fileInput" name="fileInput" value="">
         </form>
     {% else %}
         <p>There are no pages yet.</p>
