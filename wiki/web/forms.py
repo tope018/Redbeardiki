@@ -50,7 +50,8 @@ class UploadForm(Form):
     title = TextField('', [InputRequired()])
     url = TextField('', [InputRequired()])
     tags = TextField('')
-    filePath = TextField('', [InputRequired()])
+    filePath = FileField('', [InputRequired()])
+    fileInput = TextField('')
     def validate_url(form, field):
         if current_wiki.exists(field.data):
             raise ValidationError('The URL "%s" exists already.' % field.data)
