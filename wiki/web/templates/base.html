@@ -121,44 +121,4 @@
         }
     </script>
 	</body>
-<style>
-    #top {
-        display: none;
-        position: fixed;
-        bottom: 20px;
-        right: 30px;
-        background-color: royalblue;
-        color: white;
-        cursor: pointer;
-        padding: 15px;
-        border-radius: 10px;
-    }
-    #top:hover {
-        background-color: #555;
-    }
-    </style>
-
-    <button onclick="topFunction()" id="top" title="Go to top">^ Top of page</button>
-
-    <script>
-        window.onscroll = function() {scrollFunction()};
-        function scrollFunction() {
-            if (document.body.scrollTop > 50 || document.documentElement.scrollTop > 50) {
-                document.getElementById("top").style.display = "block";
-            }
-            else {
-                document.getElementById("top").style.display = "none";
-            }
-        }
-        function topFunction() {
-            document.body.scrollTop = 0;
-            document.documentElement.scrollTop = 0;
-        }
-    </script>
-		<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.9.0/jquery.min.js "></script>
-		<script type="text/javascript">
-			if (typeof jQuery == 'undefined') {
-				document.write(unescape("%3Cscript src='{{ url_for('static', filename='jquery.min.js') }}' type='text/javascript'%3E%3C/script%3E"));
-			}
-		</script>
 </html>
